@@ -1,4 +1,4 @@
-# DeepHammy - Virtual Hamster Pet
+# DeepHammy - Deep Learning Virtual Hamster
 - The hamster has a set of mandatory survival needs and secondary needs. 
 - Meeting a need provides the hamster with a reward over time. 
 - The hamster naturally learns to maximize rewards over time. 
