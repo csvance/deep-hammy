@@ -34,9 +34,6 @@ class HammyNeeds(object):
     DRUGS = 5
 
 
-HammyReward = float
-
-
 class Hammy(object):
     def __init__(self):
         self.needs = {}
