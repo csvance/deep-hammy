@@ -1,37 +1,8 @@
 # DeepHammy - Deep Learning Virtual Hamster
-- The hamster has a set of mandatory survival needs and secondary needs. 
-- Meeting a need provides the hamster with a reward over time. 
-- The hamster naturally learns to maximize rewards over time. 
-- Only what the hamster currently thinks will maximize its reward is displayed to the user, rather than what it actually may need.
-- Not all rewards are positive. For instance, hamsternip provides a reward upfront, but negatively impacts the hamsters health over time.
+Meet Hammy, a hamster with a DQN-for-brains. Watch him live his hamster life at insane speeds, and then watch him be reincarnated to do it all over again. Help him out when he is in need, or maybe get him addicited to hamsternip if you are feeling evil.
 
-## Survival Needs
-If primary needs are not met, hamster receives reduced rewards for secondary needs.
-- Eating
-- Drinking
-- Sleeping
 
-## Secondary Needs
-- HamsterNip
-- Petting
-- Toys
-
-## Emotions
-Hamster emotional state effects its reward levels
-- Neutral - This is the base hamster state. No effect to rewards.
-- Happy - When hamster receives alot of rewards. Rewards are increased further.
-- Angry - When the hamster has unmet needs to has a chance to become angry. Hamster wrecks the toys / food / water you gave him in a fit of rage. 
-- Sad - When hamster does not receive many rewards. Hamster less likely to eat, drink, or sleep. Easier to fall into addictions.
-
-## Nueral Network
-### Inputs
-- Hunger
-- Thirst
-- Sleep
-- HamsterNip Addiction
-- Affection
-- Entertainment
-
-### Outputs
-- Needs (Eat, Drink, Sleep, HamsterNip, Attention, Toys)
-- Emotion (Neutral, Happy, Angry, Sad)
+## Features
+- Hammy has a set of physical and psychological needs which must be met in order for him to survive. For example, if Hammy eats too much food in too short a term or too little, it will prove to be his undoing.
+- TODO: Speed the game up to watch hammy quickly live and learn, or slow the game down to interact with him
+- TODO: Hammy can develop an emotional response if you interact with him. Beware, because he can become dependent on your interactions, going into fits of depression or rage when he does not get what he wants. This will have a real impact on the game, including abstaining from eating, smashing his stuff, or never sleeping.
