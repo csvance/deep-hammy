@@ -77,6 +77,11 @@ class HammyDQN(object):
         else:
             target = experience.reward
 
+        if target > 1.:
+            target = 1.
+        elif target < -1.:
+            target = -1.
+
         next_rewards = self.model.predict(experience.original_state)
         next_rewards[0][experience.action.value] = target
 
@@ -90,3 +95,9 @@ class HammyDQN(object):
             return Action(np.random.choice([i for i in range(0, len(Action))]))
 
         return Action(np.argmax(self.model.predict(state)[0]))
+
+    def save(self, path="weights.h5"):
+        self.model.save_weights(filepath=path)
+
+    def load(self, path="weights.h5"):
+        self.model.load_weights(filepath=path)

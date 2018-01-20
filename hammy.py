@@ -53,6 +53,7 @@ class Hammy(object):
 
         self.health = 1.
         self.age = 0.
+        self.max_age = 24 * 365 * 3
         self.cod = None
 
     def _init_conditions(self):
