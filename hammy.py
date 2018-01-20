@@ -1,86 +1,110 @@
 from enum import Enum, unique
+import numpy as np
 from hammy_conditions import *
+from collections import deque
+import random
 
 
 @unique
-class HammyEmotion(Enum):
-    # 🤔
-    NEUTRAL = 0
-    # 😃
-    HAPPY = 1
-    # 🔥👌👪
-    LITAF = 2
-    # 😭
-    SAD = 3
-    # 🤬
-    ANGRY = 4
-    # 😫
-    WEAK = 5
-
-
-@unique
-class HammyNeeds(object):
-    # Hunger is a natural need
+class Needs(Enum):
     HUNGRY = 0
-    # Thirst is a natural need
     THIRSTY = 1
-    # Sleep is a natural need
     SLEEPY = 2
-    # Things are a learned need
-    THINGS = 3
-    # Attention is a learned need
-    ATTENTION = 4
-    # Drugs are a learned need
-    DRUGS = 5
+    ATTENTION = 3
+
+
+@unique
+class Action(Enum):
+    HUNGRY = 0
+    THIRSTY = 1
+    SLEEPY = 2
+    ATTENTION = 3
+    NONE = 4
+
+
+class Experience(object):
+    def __init__(self, original_state, action: Action, next_state, reward: float, terminal: bool = False):
+        self.original_state = original_state
+        self.action = action
+        self.next_state = next_state
+        self.reward = reward
+        self.terminal = terminal
+
+
+class ExperienceReplay(object):
+    def __init__(self):
+        self.buffer = deque(maxlen=1000)
+
+    def sample(self, batch_size=32):
+        if len(self.buffer) < batch_size:
+            return []
+        return random.sample(self.buffer, batch_size)
+
+    def store(self, experience: Experience):
+        self.buffer.append(experience)
 
 
 class Hammy(object):
     def __init__(self):
-        self.needs = {}
-        self._init_needs()
+        self.e = ExperienceReplay()
 
         self.conditions = {}
         self._init_conditions()
 
         self.health = 1.
-
-        self.emotion = HammyEmotion.NEUTRAL
-
-    def _init_needs(self):
-        self.needs[HammyNeeds.HUNGRY] = 0.
-        self.needs[HammyNeeds.THIRSTY] = 0.
-        self.needs[HammyNeeds.SLEEPY] = 0.
-        self.needs[HammyNeeds.THINGS] = 0.
-        self.needs[HammyNeeds.ATTENTION] = 0.
-        self.needs[HammyNeeds.DRUGS] = 0.
+        self.age = 0.
+        self.cod = None
 
     def _init_conditions(self):
-        self.conditions[HammyNeeds.HUNGRY] = FoodCondition()
-        self.conditions[HammyNeeds.THIRSTY] = DrinkCondition()
-        self.conditions[HammyNeeds.SLEEPY] = SleepCondition()
-        self.conditions[HammyNeeds.THINGS] = ThingsCondition()
-        self.conditions[HammyNeeds.ATTENTION] = AttentionCondition()
-        self.conditions[HammyNeeds.DRUGS] = DrugsCondition()
+        self.conditions[Needs.HUNGRY] = FoodCondition()
+        self.conditions[Needs.THIRSTY] = DrinkCondition()
+        self.conditions[Needs.SLEEPY] = SleepCondition()
+        self.conditions[Needs.ATTENTION] = AttentionCondition()
 
-    def action(self, need: HammyNeeds) -> HammyReward:
-        reward = 0.
+    def reset(self):
+        self.age = 0.
+        self.health = 1.
 
         for key in self.conditions:
-            r, h = self.conditions[key].step()
-            reward += r
-            self.health += h
+            self.conditions[key].reset()
 
-        if need == HammyNeeds.HUNGRY:
-            pass
-        elif need == HammyNeeds.THIRSTY:
-            pass
-        elif need == HammyNeeds.SLEEPY:
-            pass
-        elif need == HammyNeeds.THINGS:
-            pass
-        elif need == HammyNeeds.ATTENTION:
-            pass
-        elif need == HammyNeeds.DRUGS:
-            pass
+    def action(self, action: Action):
 
-        return reward
+        r = 0.
+        h = 0.
+
+        old_state = self.state()
+
+        if action.value == Action.NONE.value:
+            for key in self.conditions:
+                _r, _h = self.conditions[key].skip()
+                r += _r
+                h += _h
+
+                if self.health + h <= 0.:
+                    self.cod = self.conditions[key].cod_message_skip()
+        else:
+            r, h = self.conditions[Needs(action.value)].act()
+            if self.health + h <= 0.:
+                self.cod = self.conditions[Needs(action.value)].cod_message_act()
+
+        # Apply new health values
+        self.health += h
+
+        new_state = self.state()
+
+        if self.health > 0.:
+            self.e.store(Experience(original_state=old_state, action=action, next_state=new_state, reward=r))
+            self.age += 1
+            return True
+        else:
+            self.e.store(
+                Experience(original_state=old_state, action=action, next_state=new_state, reward=-1., terminal=True))
+            return False
+
+    def state(self) -> list:
+
+        conditions = [self.conditions[Needs.HUNGRY].level, self.conditions[Needs.THIRSTY].level,
+                      self.conditions[Needs.SLEEPY].level, self.conditions[Needs.ATTENTION].level]
+
+        return [np.array([conditions]), np.array([self.health])]
