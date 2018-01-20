@@ -1,5 +1,5 @@
 # DeepHammy - Deep Learning Virtual Hamster
-Meet Hammy, a hamster with a DQN-for-brains. Watch him live his hamster life at insane speeds, and then watch him be reincarnated to do it all over again. Help him out when he is in need, or maybe get him addicited to hamsternip if you are feeling evil.
+Meet Hammy, a hamster with a DQN-for-brains. Watch him live his hamster life at insane speeds, and then watch him be reincarnated to do it all over again. Help him out when he is in need, or maybe get him addicited to hamsternip if you are evil.
 
 
 ## Features
