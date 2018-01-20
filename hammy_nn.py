@@ -47,10 +47,11 @@ class Ramp(object):
 
 
 class HammyDQN(object):
-    def __init__(self):
+    def __init__(self, epsilon_start: float = 1., epsilon_end: float = 0., epsilon_steps: int = 10000,
+                 gamma_start: float = 0., gamma_end: float = 0.9, gamma_steps: int = 0):
 
-        self.gamma = Ramp(start=0., end=0.9, steps=0)
-        self.epsilon = Ramp(start=1., end=0., steps=10000)
+        self.gamma = Ramp(start=gamma_start, end=gamma_end, steps=gamma_steps)
+        self.epsilon = Ramp(start=epsilon_start, end=epsilon_end, steps=epsilon_steps)
 
         input_needs = Input(shape=(len(Needs),))
         input_health = Input(shape=(1,))
